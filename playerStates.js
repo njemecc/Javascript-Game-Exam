@@ -5,6 +5,9 @@ const states = {
   RUNNING: 1,
   JUMPING: 2,
   FALLING: 3,
+  ROLLING: 4,
+  DIVING: 5,
+  HIT: 6,
 };
 
 class State {
@@ -30,6 +33,8 @@ export class Sitting extends State {
       this.player.setState(states.RUNNING, 1);
     } else if (input.includes("ArrowUp")) {
       this.player.setState(states.JUMPING, 1);
+    } else if (input.includes("Enter")) {
+      this.player.setState(states.ROLLING, 2);
     }
   }
 }
@@ -51,6 +56,8 @@ export class Running extends State {
       this.player.setState(states.SITTING, 0);
     } else if (input.includes("ArrowUp")) {
       this.player.setState(states.JUMPING, 1);
+    } else if (input.includes("Enter")) {
+      this.player.setState(states.ROLLING, 2);
     }
   }
 }
@@ -71,6 +78,8 @@ export class Jumping extends State {
   handleInput(input) {
     if (this.player.vy > this.player.weight) {
       this.player.setState(states.FALLING, 1);
+    } else if (input.includes("Enter")) {
+      this.player.setState(states.ROLLING, 2);
     }
   }
 }
@@ -90,6 +99,33 @@ export class Falling extends State {
   handleInput(input) {
     if (this.player.onGround()) {
       this.player.setState(states.RUNNING, 1);
+    }
+  }
+}
+
+export class Rolling extends State {
+  constructor(player) {
+    super("Rolling");
+    this.player = player;
+  }
+
+  enter() {
+    this.player.frameX = 0;
+    this.player.maxFrame = 6;
+    this.player.frameY = 6;
+  }
+
+  handleInput(input) {
+    if (!input.includes("Enter") && this.player.onGround()) {
+      this.player.setState(states.RUNNING, 1);
+    } else if (!input.includes("Enter") && !this.player.onGround()) {
+      this.player.setState(states.FALLING, 1);
+    } else if (
+      input.includes("Enter") &&
+      input.includes("ArrowUp") &&
+      this.player.onGround()
+    ) {
+      this.player.vy -= 27;
     }
   }
 }
