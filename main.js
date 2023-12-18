@@ -22,6 +22,7 @@ window.addEventListener("load", function () {
       this.input = new InputHandler(this);
       this.UI = new UI(this);
       this.enemies = [];
+      this.particles = [];
       this.enemyTimer = 0;
       this.enemyInterval = 1000;
       this.debug = true;
@@ -46,6 +47,12 @@ window.addEventListener("load", function () {
         if (enemy.markedForDeletion)
           this.enemies.splice(this.enemies.indexOf(enemy), 1);
       });
+
+      //handle particles
+      this.particles.map((particle, i) => {
+        particle.update();
+        if (particle.markedForDeletion) this.particles.splice(i, 1);
+      });
     }
 
     draw(context) {
@@ -54,6 +61,12 @@ window.addEventListener("load", function () {
       this.enemies.map((enemy) => {
         enemy.draw(context);
       });
+
+      //handle particles
+      this.particles.map((particle) => {
+        particle.draw(context);
+      });
+
       this.UI.draw(context);
     }
     addEnemy() {
