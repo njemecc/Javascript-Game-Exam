@@ -23,6 +23,7 @@ window.addEventListener("load", function () {
       this.UI = new UI(this);
       this.enemies = [];
       this.particles = [];
+      this.maxParticles = 50;
       this.enemyTimer = 0;
       this.enemyInterval = 1000;
       this.debug = true;
@@ -53,6 +54,9 @@ window.addEventListener("load", function () {
         particle.update();
         if (particle.markedForDeletion) this.particles.splice(i, 1);
       });
+      if (this.particles > this.maxParticles) {
+        this.particles = this.particles.slice(0, 50);
+      }
     }
 
     draw(context) {
